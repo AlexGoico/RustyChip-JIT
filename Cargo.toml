@@ -1,0 +1,19 @@
+[package]
+name = "rcj"
+version = "0.0.0"
+authors = ["Alex Goico", "Mark McCaskey"]
+edition = "2018"
+
+[dependencies]
+chrono = "0.4"
+clap = "2.33"
+cranelift = {version = "0.30", optional = true}
+fern = {version = "0.5", features = ["colored"]}
+log = "0.4"
+sdl2 = "0.32"
+structopt = "0.2"
+structopt-derive = "0.2"
+
+[features]
+"backend:clif" = ["cranelift"]
+default = ["backend:clif"]
