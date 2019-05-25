@@ -63,7 +63,18 @@ impl Render {
                 Event::KeyDown {
                     keycode: Some(kc), ..
                 } => {
-                    debug!("{:?} was pressed!", self.keymap.get(&kc));
+                    if let Some(v) = self.keymap.get(&kc) {
+                        debug!("{:X} was pressed!", v);
+                        out_events.push(EventCommand::PressKey(*v));
+                    }
+                }
+                Event::KeyUp {
+                    keycode: Some(kc), ..
+                } => {
+                    if let Some(v) = self.keymap.get(&kc) {
+                        debug!("{:X} was released!", v);
+                        out_events.push(EventCommand::UnpressKey(*v));
+                    }
                 }
                 _ => {}
             }

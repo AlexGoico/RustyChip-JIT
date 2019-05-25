@@ -37,6 +37,7 @@ fn main() {
     // load ROM
     // init chip8
     let mut render = render::Render::new(&settings);
+    let mut ctx = runtime::Ctx::new();
 
     'program: loop {
         use render::EventCommand;
@@ -49,7 +50,12 @@ fn main() {
                     info!("Exiting!");
                     break 'program;
                 }
-                _ => (),
+                EventCommand::PressKey(kv) => {
+                    ctx.set_key(kv, true);
+                }
+                EventCommand::UnpressKey(kv) => {
+                    ctx.set_key(kv, false);
+                }
             }
         }
         // sleep
