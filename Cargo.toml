@@ -16,6 +16,7 @@ log = "0.4"
 sdl2 = "0.32"
 structopt = "0.2"
 structopt-derive = "0.2"
+target-lexicon = "0.3"
 
 [features]
 "backend:clif" = ["cranelift", "cranelift-module", "cranelift-simplejit"]

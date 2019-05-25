@@ -53,6 +53,8 @@ impl Compiler {
                 runtime_ctx_ptr,
                 module: &mut self.module,
             };
+            op_trans.translate_op(0x00E0);
+            op_trans.builder.ins().return_(&[]);
         }
 
         let id = self
@@ -80,20 +82,27 @@ struct OpcodeTranslator<'a> {
 }
 
 impl<'a> OpcodeTranslator<'a> {
-    fn translate_op(&mut self, op: u16) -> Value {
+    fn translate_op(&mut self, op: u16) -> Option<Value> {
         match op {
             // CLS
             0x00E0 => {
                 let screen_offset = self.runtime_ctx.screen_offset();
                 let screen_size = self.runtime_ctx.screen_size();
 
-                //self.builder.emit_small_memset()
+                let target_conf = cranelift::prelude::isa::TargetFrontendConfig {
+                    default_call_conv: cranelift::prelude::isa::CallConv::Fast,
+                    pointer_width: target_lexicon::PointerWidth::U64,
+                };
+                let screen_loc =
+                    Value::from_u32(self.runtime_ctx_ptr.as_u32() + screen_offset as u32);
+                self.builder
+                    .emit_small_memset(target_conf, screen_loc, 0, screen_size as u64, 1);
+                None
                 /*
                 let result = builder.ins().iadd(arg1, arg2);
                         builder.ins().return_(&[result]);
                         builder.finalize();
                 */
-                unimplemented!();
             }
             _ => unimplemented!(),
         }
