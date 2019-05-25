@@ -39,4 +39,13 @@ impl Ctx {
         self.keys &= !bit;
         self.keys |= bit;
     }
+
+    /// The offset of screen from the start of the struct
+    pub fn screen_offset(&self) -> usize {
+        (&self.screen as *const _ as usize) - (self as *const Ctx as usize)
+    }
+
+    pub const fn screen_size(&self) -> usize {
+        32 * 8
+    }
 }

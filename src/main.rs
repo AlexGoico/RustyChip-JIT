@@ -41,9 +41,11 @@ fn main() {
     let mut render = render::Render::new(&settings);
     let mut ctx = runtime::Ctx::new();
     let mut compiler = Compiler::new();
-    let output = compiler.compile(&[]).unwrap();
-    let entry_point = unsafe { std::mem::transmute::<_, fn(isize, isize) -> isize>(output) };
-    println!("Output from generated code: {}", entry_point(3, 4));
+    let output = compiler.compile(&ctx, &[]).unwrap();
+    let entry_point = unsafe { std::mem::transmute::<_, fn(isize)>(output) };
+    entry_point(&mut ctx as *mut runtime::Ctx as isize);
+
+    println!("{:?}", ctx.screen_offset());
 
     'program: loop {
         use render::EventCommand;
