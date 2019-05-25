@@ -23,6 +23,7 @@ pub fn setup_logger() -> Result<(), fern::InitError> {
                 message = message,
             ));
         })
+        .level_for("cranelift_codegen", log::LevelFilter::Info)
         .level(log::LevelFilter::Debug)
         .chain(std::io::stderr())
         .apply()?;

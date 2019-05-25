@@ -4,11 +4,13 @@ extern crate log;
 #[macro_use]
 extern crate lazy_static;
 
+pub mod compiler;
 pub mod logging;
 pub mod render;
 pub mod runtime;
 pub mod settings;
 
+use crate::compiler::Compiler;
 use crate::settings::Settings;
 use std::path::PathBuf;
 use structopt::StructOpt;
@@ -38,6 +40,10 @@ fn main() {
     // init chip8
     let mut render = render::Render::new(&settings);
     let mut ctx = runtime::Ctx::new();
+    let mut compiler = Compiler::new();
+    let output = compiler.compile(&[]).unwrap();
+    let entry_point = unsafe { std::mem::transmute::<_, fn(isize, isize) -> isize>(output) };
+    println!("Output from generated code: {}", entry_point(3, 4));
 
     'program: loop {
         use render::EventCommand;

@@ -12,6 +12,7 @@ pub struct Ctx {
     sp: u8,
     delay_timer: u8,
     sound_timer: u8,
+    screen: [u64; 32],
 }
 
 impl Ctx {
@@ -26,6 +27,7 @@ impl Ctx {
             sp: 0,
             delay_timer: 0,
             sound_timer: 0,
+            screen: [0; 32],
         }
     }
 
