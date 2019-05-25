@@ -1,10 +1,15 @@
 //! rcj is a CHIP-8 emulator with a JIT
 #[macro_use]
 extern crate log;
+#[macro_use]
+extern crate lazy_static;
 
 pub mod logging;
 pub mod render;
+pub mod runtime;
+pub mod settings;
 
+use crate::settings::Settings;
 use std::path::PathBuf;
 use structopt::StructOpt;
 
@@ -28,9 +33,10 @@ fn main() {
     println!("Hello, world");
 
     let app = App::from_args();
+    let settings = Settings::new();
     // load ROM
     // init chip8
-    let mut render = render::Render::new();
+    let mut render = render::Render::new(&settings);
 
     'program: loop {
         use render::EventCommand;
@@ -43,6 +49,7 @@ fn main() {
                     info!("Exiting!");
                     break 'program;
                 }
+                _ => (),
             }
         }
         // sleep

@@ -1,10 +1,16 @@
 //! Rendering code.  Starting out simple with CPU-based rendering
+
+pub mod keymaps;
+
+use crate::render::keymaps::KeyMap;
+use crate::settings::Settings;
 use sdl2::{event::Event, keyboard::Keycode, pixels::Color};
 
 pub struct Render {
     sdl_context: sdl2::Sdl,
     _video_subsystem: sdl2::VideoSubsystem,
     canvas: sdl2::render::Canvas<sdl2::video::Window>,
+    keymap: KeyMap,
 }
 
 /// Commands given from the window's events
@@ -12,10 +18,14 @@ pub struct Render {
 pub enum EventCommand {
     /// End the program
     Quit,
+    /// Set key to pressed
+    PressKey(u8),
+    /// Set key to unpressed
+    UnpressKey(u8),
 }
 
 impl Render {
-    pub fn new() -> Self {
+    pub fn new(settings: &Settings) -> Self {
         let sdl_context = sdl2::init().unwrap();
         let _video_subsystem = sdl_context.video().unwrap();
         let window = _video_subsystem
@@ -28,6 +38,7 @@ impl Render {
             sdl_context,
             _video_subsystem,
             canvas,
+            keymap: settings.keymap.clone(),
         }
     }
 
@@ -49,6 +60,11 @@ impl Render {
                     keycode: Some(Keycode::Escape),
                     ..
                 } => out_events.push(EventCommand::Quit),
+                Event::KeyDown {
+                    keycode: Some(kc), ..
+                } => {
+                    debug!("{:?} was pressed!", self.keymap.get(&kc));
+                }
                 _ => {}
             }
         }
